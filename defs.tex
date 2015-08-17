@@ -1,0 +1,99 @@
+%% FILENAME: defs.tex
+%% AUTHOR:   Cameron Swords
+
+\usepackage{amsmath, listings, amsthm, amssymb, proof, xspace}
+
+%%------------------------------------------------------------------------
+%% DEFINITION HELPERS
+%%------------------------------------------------------------------------
+
+\newcommand{\alt}{~~|~~}
+\newcommand{\comp}[1]{\llbracket #1 \rrbracket}
+
+\newcommand{\inlinexp}[1]{
+{\footnotesize
+ \[\begin{array}{l}
+ #1
+ \end{array}\]}}
+
+\newcommand{\inlinexpa}[2]{
+{\footnotesize
+ \[\begin{array}{#1}
+ #2
+ \end{array}\]}}
+
+\newcommand{\infr} [3] [] {\infer[\textsc{#1}]{#3}{#2}}
+\newcommand{\iand}        {\qquad}
+
+\newcommand{\Ctxt}       {\mathcal{E}}
+\newcommand{\InCtxt} [1] {\Ctxt[#1]}
+
+%%------------------------------------------------------------------------
+%% REDUCTION RELATION MACROS
+%%------------------------------------------------------------------------
+
+\newcommand{\subst} [3]    {#3 [#2 / #1]}
+\newcommand{\dstep} [2]    {#1 ~\Downarrow~ #2}
+
+\newcommand{\ssosredex}        {\rightarrow}
+\newcommand{\ctxtreduce}       {\mapsto}
+\newcommand{\sstep}     [3] [] {#2 &\ssosredex&  #3 &\textsc{#1}}
+\newcommand{\ctxtstep}  [3] [] {#2 &\ctxtreduce& #3 &\textsc{#1}}
+
+%%------------------------------------------------------------------------
+%% TYPE DEFINITION MACROS
+%%------------------------------------------------------------------------
+
+\newcommand{\funct} [2] {#1\nobreak\rightarrow\nobreak#2}
+\newcommand{\boolt}     {\mathtt{bool}}
+
+\newcommand{\typeEnv}         {\Gamma}
+\newcommand{\entails}         {\vdash}
+\newcommand{\judgment}   [3] {#1 \entails #2 : #3}
+\newcommand{\envent}      [2] {\judgment{\typeEnv}{#1}{#2}}
+\newcommand{\extenvent}   [4] {\judgment{\typeEnv, #1 : #2}{#3}{#4}}
+\newcommand{\envlookup}   [3] {\infr{#1(#2) = #3}{\judgment{#1}{#2}{#3}}}
+
+%%------------------------------------------------------------------------
+%% EXPRESSION MACROS
+%%------------------------------------------------------------------------
+
+%% lambda
+\newcommand{\lamdefe}  [2] {\lambda #1.~#2}
+\newcommand{\lamdefea} [2] {\begin{array}{l}\lambda#1.\\\hspace*{.5em}#2\\\end{array}}
+
+%% let
+\newcommand{\letdefe}    [3] {\letbind{#1}{#2}~\letin{#3}}
+\newcommand{\letdefarre} [3] {\begin{array}{l}\letbind{#1}{#2}\\\letin{#3})\\\end{array}}
+
+\newcommand{\letbind}  [2] {\mathsf{let}~\lbind{#1}{#2}}
+\newcommand{\letbindp} [2] {\mathsf{let}~(\lbind{#1}{#2})}
+\newcommand{\lbind}    [2] {#1=#2}
+\newcommand{\letin}    [1] {\mathsf{in}~#1}
+
+%% if
+\newcommand{\ife}      [3] {\ifline{#1}~\thenline{#2}~\elseline{#3}}
+\newcommand{\ifea}     [3] {\begin{array}{l}\ifline{#1}\\\thenline{#2}\\\elseline{#3}\end{array}}
+
+\newcommand{\ifop}         {\mathsf{if}}
+\newcommand{\ifline}   [1] {\ifop~ #1}
+\newcommand{\thenline} [1] {\mathsf{then}~#1}
+\newcommand{\elseline} [1] {\mathsf{else}~#1}
+
+%% opers
+\newcommand{\binopdef}     {\mathit{binop}}
+\newcommand{\unopdef}      {\mathit{unop}}
+\newcommand{\binope}   [2] {\binopdef~#1~#2}
+\newcommand{\unope}    [1] {\unopdef~#1}
+
+\newcommand{\andop}        {\mathsf{and}}
+\newcommand{\orop}         {\mathsf{or}}
+\newcommand{\notop}        {\mathsf{not}}
+\newcommand{\ande}     [2] {\mathsf{and}~#1~#2}
+\newcommand{\ore}      [2] {\mathsf{or}~#1~#2}
+\newcommand{\note}     [1] {\mathsf{not}~#1}
+
+%% values
+\newcommand{\falsev}     {\mathsf{false}}
+\newcommand{\truev}      {\mathsf{true}}
+

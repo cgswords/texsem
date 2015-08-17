@@ -1,0 +1,136 @@
+%% FILENAME: paper.tex
+%% AUTHOR:   Cameron Swords
+
+\documentclass[10pt]{article}
+
+\input{defs.tex}
+
+\setlength{\abovedisplayskip}{2pt}
+\setlength{\belowdisplayskip}{2pt}
+
+\begin{document}
+
+\section{Language Definitions}
+
+\[
+  \begin{array}{rcl}
+  e  &:=& x \alt v \alt e~e \alt \letdefe{x}{e}{e}\\
+     &\alt& \ife{e}{e}{e} \alt \unope{e} \alt \binope{e}{e}\\
+  \\ %% A line break before the next definition sets
+  v  &:=& \lamdefe{x}{e} \alt \truev \alt \falsev\\
+  \\
+  \binopdef &:=& \andop \alt \orop\\
+  \unopdef  &:=& \notop \\
+  \\
+  \Ctxt &:=& \Ctxt~e \alt v~\Ctxt \alt \letdefe{x}{\Ctxt}{e}\\
+  &\alt& \ife{\Ctxt}{e}{e} \alt \unope{\Ctxt} \alt \binope{\Ctxt}{e} \alt \binope{v}{\Ctxt}\\
+  \\
+  \tau  &:=& \boolt \alt \funct{\tau}{\tau}\\
+  \end{array}
+\]
+
+\section{Semantics One}
+
+\begin{gather*}
+\infr[App]
+  {\dstep{e_1}{\lamdefe{x}{e'}} \iand \dstep{e_2}{v} \iand \cdots}
+  {\dstep{e_1~e_2}{\subst{x}{v}{e'}}}
+~
+\infr
+  {\dstep{e_1}{v} \iand \cdots}
+  {\dstep{\letdefe{x}{e_1}{e_2}}{\subst{x}{v}{e_2}}}
+\\
+\infr
+  {\dstep{e_1}{\truev} \iand \dstep{e_2}{v}}
+  {\dstep{\ife{e_1}{e_2}{e_3}}{v}}
+~
+\infr
+  {\dstep{e_1}{\falsev} \iand \dstep{e_3}{v}}
+  {\dstep{\ife{e_1}{e_2}{e_3}}{v}}
+\\
+\infr
+  {\dstep{e_1}{\truev} \iand \dstep{e_2}{\truev}}
+  {\dstep{\ande{e_1}{e_2}}{\truev}}
+~
+\infr
+  {\dstep{e_1}{\falsev}}
+  {\dstep{\ande{e_1}{e_2}}{\falsev}}
+\\
+\infr
+  {\dstep{e_1}{\truev}}
+  {\dstep{\ore{e_1}{e_2}}{\truev}}
+~
+\infr
+  {\dstep{e_1}{\falsev} \iand \dstep{e_2}{v}}
+  {\dstep{\ore{e_1}{e_2}}{v}}
+\\
+\infr
+  {\dstep{e}{\truev}}
+  {\dstep{\note{e}}{\falsev}}
+~
+\infr
+  {\dstep{e}{\falsev}}     
+  {\dstep{\note{e}}{\truev}}
+\end{gather*}
+
+\section{Semantics Two}
+
+\[
+  \begin{array}{rcll}
+  \sstep  {(\lamdefe{x}{e})~v}      {\subst{x}{v}{e} (\cdots)}{App}\\
+  \sstep  {\letdefe{x}{v}{e}}       {\subst{x}{v}{e} (\cdots)}\\
+  \sstep  {\ife{\truev}{e_2}{e_3}}  {e_2}\\
+  \sstep  {\ife{\falsev}{e_2}{e_3}} {e_3}\\
+  \sstep  {\ande{\falsev}{e_2}}     {\falsev}\\
+  \sstep  {\ande{\truev}{e_2}}      {e_2}\\
+  \sstep  {\ore{\falsev}{e_2}}      {e_2}\\
+  \sstep  {\ore{\truev}{e_2}}       {\truev}\\
+  \sstep  {\note{\falsev}}          {\truev}\\
+  \sstep  {\note{\truev}}           {\falsev}\\
+  \\
+  \ctxtstep {\InCtxt{e}}            {\InCtxt{e'} ~ (\text{if } e\ssosredex e')}\\
+  \end{array}
+\]
+
+\section{Typing Judgments}
+
+\[
+  \begin{array}{cc}
+    \envlookup{\typeEnv}{x}{\tau} 
+    &
+    \infr
+      {\extenvent{x}{\tau}{e}{\tau'}}
+      {\envent{\lamdefe{x}{e}}{\funct{\tau}{\tau'}}} 
+    \\\\
+    \infr
+      {\envent{e_1}{\funct{\tau}{\tau'}} \iand 
+       \envent{e_2}{\tau}}
+      {\envent{e_1~e_2}{\tau'}} 
+    &
+    \infr
+      {\extenvent{x}{\tau'}{e_2}{\tau} \iand
+       \envent{e_1}{\tau'}}
+      {\envent{\letdefe{x}{e_1}{e_2}}{\tau}}
+    \\\\
+      \infr
+        {\envent{e_1}{\boolt} \iand \envent{e_2}{\tau} \iand \envent{e_3}{\tau}}
+        {\envent{\ife{e_1}{e_2}{e_3}}{\tau}}
+    &
+    \infr
+      {\envent{\unopdef}{\funct{\tau'}{\tau}} \iand
+       \envent{e}{\tau'}}
+      {\envent{\unope{e}}{\tau}}
+    \\\\
+    \multicolumn{2}{c}{ %% for a really LOOOOONG rule
+      \infr
+        {\envent{\binopdef}{\funct{\tau_1}{\funct{\tau_2}{\tau}}} \iand
+         \envent{e_1}{\tau_1}                                     \iand
+         \envent{e_2}{\tau_2}}
+        {\envent{\binope{e_1}{e_2}}{\tau}}
+    }
+    \\\\
+  \end{array}
+\]
+
+\end{document}
+
